@@ -72,8 +72,8 @@
         	position: absolute;
         	left: 0px;
         	top: 0px;
-        	width: 200px;
-        	height: 80px;
+        	width: 240px;
+        	height: 130px;
         	background-color: #ffffff;
         	border: 1px solid #e0e0e0;
         	border-radius: 2px;
@@ -111,137 +111,7 @@
         }
     </style>
     <script src="http://d3js.org/d3.v3.min.js"></script>
-     <script>
-    var avgpref = null;
-    var party_colours = {};
-
-    var abbrev = {
-	  "Christian Democratic Party": "CDP", "Rise Up Australia": "RsUp",  "Bank Reform Party": "BkRf", 
-	  "Drug Law Reform": "DrgL",  "Australian Sex Party": "Sex",  "Carers Alliance": "Crrs",  
-	  "Country Alliance": "CtrA", "Australian Christians": "AXtn",  "National Party": "NAT", 
-	  "Stop CSG": "!CSG",  "Socialist Alliance": "SocA",  "Liberal National Party": "LNP", 
-	  "Outdoor Recreation Party (Stop the Greens)": "AntG",  "Non-Custodial Parents Party (Equal Parenting)": "NCPP", 
-	  "Shooters and Fishers": "ShFi",  "Voluntary Euthanasia Party": "Euth",  "Australian Sports Party": "Sprt", 
-	  "Group I": "GrpI",   "Group F": "GrpF",  "Senator OnLine": "Onln",  "Australian Independents": "AInd",  "Smokers Rights": "Smke", 
-	  "Australian Fishing and Lifestyle Party": "Fish", "Australian Motoring Enthusiasts Party": "Ptrl", 
-	  "Building Australia Party": "Buil",  "Australian Labor Party": "ALP",   "Socialist Equality Party": "Soc=", 
-	  "Group AG": "G_AG",  "Group AJ": "G_AJ",   "Group U": "G_U",  "Help End Marijuana Prohibition": "HEMP", 
-	  "Democratic Labour Party": "DLP",   "Nick Xenophon Group": "Xeno",   "Palmer United Party": "Plmr", 
-	  "Group C": "G_C",   "Pirate Party": "ARRR",  "Greens": "GRN",   "Group T": "G_T",   "Future Party": "Futr", 
-	  "Uniting Australia Party": "Unit",   "Group L": "G_L",   "No Carbon Tax Climate Sceptics": "Crbn", 
-	  "Liberal Party": "LIB",  "The Wikileaks Party": "Wiki",   "Family First": "FF",   "Australian Democrats": "DEM", 
-	  "Australian Protectionist Party": "Prot",   "Stable Population Party": "Popn",   "Country Liberals": "CLP", 
-	  "Australian Republicans": "Repb",   "Bullet Train for Australia": "BTrn",   "Australian Voice Party": "Voic", 
-	  "Australia First Party" : "AF",
-	  "Australian First Nations Party": "AFNP",   "A.F.N.P.P.": "AFNP",   "Secular Party of Australia": "Secu", 
-	  "Katter's Australian Party": "Katr",   "One Nation": "OneN",   "Liberal Democratic Party": "LDP",   
-	  "Citizens Electoral Council": "CEC", "Animal Justice Party": "Anim", "_":"-", "Independent":"IND",
-
-	};
-
-     function partyColour(party) {
-     	return party_colours[party] || '#ccc';
-     };
-
-     // the current preference relationship: party name -> pref
-     var curgiven = {}, currcvd = {};
-
-     /* called when a party has been selected */
-     function selected(name) {
-     	var i;
-     	if(!avgpref) return;
-     	var given = avgpref.given[name], rcvd = avgpref.received[name];
-     	d3.select('#instructions').style('visibility', 'hidden');
-     	d3.select('#info').style('visibility', 'visible');
-     	d3.select('#info').select('h2').text(name);
-     	d3.select('#prefinforel').text(name);
-     	d3.select('#prefinforel2').text(name);
-     	d3.select('#givenname').text(name);
-     	d3.select('#rcvdname').text(name);
-
-     	d3.select('#givenpane svg').style('visibility', given ? 'visible' : 'hidden');
-     	d3.select('#rcvdpane svg').style('visibility', rcvd ? 'visible' : 'hidden');
-     	d3.select('#givenpane .emptymsg').style('visibility', given ? 'hidden' : 'visible');
-     	d3.select('#rcvdpane .emptymsg').style('visibility', rcvd ? 'hidden' : 'visible');
-
-     	if(given) { given.forEach(function(d) {curgiven[d.name] = d.pref;}); }
-     	if(rcvd) { rcvd.forEach(function(d) {currcvd[d.name] = d.pref;}); }
-
-     	prefCharts.given.updateData(avgpref.given[name]);
-     	prefCharts.received.updateData(avgpref.received[name]);
-     };
-
-     function draw(data) {
-        "use strict";
-
-		var width = 500, height = 600;
-
-		// set initial positions
-		for(var i = 0; i < data.nodes.length; i += 1) {
-			party_colours[data.nodes[i].name] = data.nodes[i].colour;
-			if(data.nodes[i].name == 'Liberal Party') {
-				data.nodes[i].x = 350;
-				data.nodes[i].y = 200;
-			}
-			else if(data.nodes[i].name == 'Australian Labor Party') {
-				data.nodes[i].x = 150;
-				data.nodes[i].y = 200;
-			}
-			else if(data.nodes[i].name == 'Greens') {
-				data.nodes[i].x = 250;
-				data.nodes[i].y = 400;
-			}
-			else {
-				data.nodes[i].x = 250;
-				data.nodes[i].y = 300;
-			}
-		}
-		var svg = d3.select('svg#graph');
-		svg.append('circle')
-			.attr('id', 'halo')
-			.style('fill', '#ffffff')
-			.attr('cx',100)
-			.attr('cy',100)
-			.attr('r','12');
-
-		var node = svg.selectAll("g.node") .data(data.nodes)
-			.enter()
-			.append('g')
-			.attr("class", "node") ;
-
-		node.append("circle")
-			.attr('class', 'node')
-			.attr('cx',0)
-			.attr('cy',0)
-			.attr("r", 5)
-			.style('fill', function(n,i){return n.colour;})
-			.attr('title', function(n){return n.name;})
-			.attr('stroke','#ffffff')
-			.attr('stroke-width', 0)
-			.on('click', function(n){selected(n.name)});
-		node.append("text")
-			.attr('class','label')
-	        .attr("dx", 8)
-	        .attr("dy", ".35em")
-	        .text(function(d) { return abbrev[d.name]; });
-
-		svg.selectAll('circle.node')
-			.on('mouseover', function(d) {
-				d3.select(this).transition().attr('r',7);
-			})
-			.on('mouseout', function(d) {
-				d3.select(this).transition().attr('r',5);
-			});
-
-		var force = d3.layout.force() .charge(-120)
-			.linkDistance(function(l){return 4.0/l.value;})
-			.size([width, height]) .nodes(data.nodes) .links(data.links) .start();
-	    force.on("tick", function() {
-			node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-			});
-        node.call(force.drag);
-		};
-     </script> </head>
+</head>
 <body> 
   <div id="header">
   	<h1>Australian Senate Preference Navigator 2013</h1>
@@ -263,6 +133,8 @@
 		  	</svg>
 		  	<div class="emptymsg" style="visibility: hidden">No other parties gave preferences to <span id="rcvdname">this party</span>.</div>
 		</div>
+        <p><b>Preference buddies:</b> <span id="buddies"></span></p>
+        <p><b>Adversaries:</b> <span id="nemeses"></span></p>
 	  </div>
 	  <div id="instructions" style="visibility: visible">
 	  	<p>The circles represent political parties or tickets giving or receiving preferences for the Senate in the 2013 Federal Election. Circles which preference each other more highly are (more or less) closer together.</p>
@@ -278,8 +150,171 @@
 		<div id="prefinfoname">&nbsp;</div>
 		<p>Average preference given to <span id="prefinforel">-</span>: <span id="prefinfogiven">-</span></p>
 		<p>Average preference received from <span id="prefinforel2">-</span>: <span id="prefinforcvd">-</span></p>
+        <p>Buddies with: <span id="prefinfobuddies"></span></p>
 	</div>
-  <script>
+     <script>
+    var avgpref = null;
+    var party_colours = {};
+
+    var abbrev = {
+      "Christian Democratic Party": "CDP", "Rise Up Australia": "RsUp",  "Bank Reform Party": "BkRf", 
+      "Drug Law Reform": "DrgL",  "Australian Sex Party": "Sex",  "Carers Alliance": "Crrs",  
+      "Country Alliance": "CtrA", "Australian Christians": "AXtn",  "National Party": "NAT", 
+      "Stop CSG": "!CSG",  "Socialist Alliance": "SocA",  "Liberal National Party": "LNP", 
+      "Outdoor Recreation Party (Stop the Greens)": "AntG",  "Non-Custodial Parents Party (Equal Parenting)": "NCPP", 
+      "Shooters and Fishers": "ShFi",  "Voluntary Euthanasia Party": "Euth",  "Australian Sports Party": "Sprt", 
+      "Group I": "GrpI",   "Group F": "GrpF",  "Senator OnLine": "Onln",  "Australian Independents": "AInd",  "Smokers Rights": "Smke", 
+      "Australian Fishing and Lifestyle Party": "Fish", "Australian Motoring Enthusiasts Party": "Ptrl", 
+      "Building Australia Party": "Buil",  "Australian Labor Party": "ALP",   "Socialist Equality Party": "Soc=", 
+      "Group AG": "G_AG",  "Group AJ": "G_AJ",   "Group U": "G_U",  "Help End Marijuana Prohibition": "HEMP", 
+      "Democratic Labour Party": "DLP",   "Nick Xenophon Group": "Xeno",   "Palmer United Party": "Plmr", 
+      "Group C": "G_C",   "Pirate Party": "ARRR",  "Greens": "GRN",   "Group T": "G_T",   "Future Party": "Futr", 
+      "Uniting Australia Party": "Unit",   "Group L": "G_L",   "No Carbon Tax Climate Sceptics": "Crbn", 
+      "Liberal Party": "LIB",  "The Wikileaks Party": "Wiki",   "Family First": "FF",   "Australian Democrats": "DEM", 
+      "Australian Protectionist Party": "Prot",   "Stable Population Party": "Popn",   "Country Liberals": "CLP", 
+      "Australian Republicans": "Repb",   "Bullet Train for Australia": "BTrn",   "Australian Voice Party": "Voic", 
+      "Australia First Party" : "AF",
+      "Australian First Nations Party": "AFNP",   "A.F.N.P.P.": "AFNP",   "Secular Party of Australia": "Secu", 
+      "Katter's Australian Party": "Katr",   "One Nation": "OneN",   "Liberal Democratic Party": "LDP",   
+      "Citizens Electoral Council": "CEC", "Animal Justice Party": "Anim", "_":"-", "Independent":"IND",
+
+    };
+
+     function partyColour(party) {
+        return party_colours[party] || '#ccc';
+     };
+
+     // return a list of N parties most 
+     function getbuddies(party, count) {
+        var d = d3.set([]), gi=0, nm, got=0;
+        var given = avgpref.given[party];
+        if(!given) return [];
+        while(got < count) {
+            nm = given[gi++].name;
+            if(nm !== party && !d.has(nm)) { 
+                d.add(nm);
+                got += 1;
+            }
+        }
+        return d.values();
+     };
+     // return a list of N parties most 
+     function getfoes(party, count) {
+        var d = d3.set([]), nm, got=0;
+        var given = avgpref.given[party], gi=given.length-1;
+        if(!given) return [];
+        while(got < count) {
+            nm = given[gi--].name;
+            console.log("nm = "+nm);
+            if(nm !== party && !d.has(nm)) { 
+                d.add(nm);
+                got += 1;
+            }
+        }
+        return d.values();
+     };
+
+     // the current preference relationship: party name -> pref
+     var curgiven = {}, currcvd = {};
+
+     /* called when a party has been selected */
+     function selected(name) {
+        var i;
+        if(!avgpref) return;
+        var given = avgpref.given[name], rcvd = avgpref.received[name];
+        d3.select('#instructions').style('visibility', 'hidden');
+        d3.select('#info').style('visibility', 'visible');
+        d3.select('#info').select('h2').text(name);
+        d3.select('#prefinforel').text(name);
+        d3.select('#prefinforel2').text(name);
+        d3.select('#givenname').text(name);
+        d3.select('#rcvdname').text(name);
+
+        d3.select('#givenpane svg').style('visibility', given ? 'visible' : 'hidden');
+        d3.select('#rcvdpane svg').style('visibility', rcvd ? 'visible' : 'hidden');
+        d3.select('#givenpane .emptymsg').style('visibility', given ? 'hidden' : 'visible');
+        d3.select('#rcvdpane .emptymsg').style('visibility', rcvd ? 'hidden' : 'visible');
+
+        if(given) { given.forEach(function(d) {curgiven[d.name] = d.pref;}); }
+        if(rcvd) { rcvd.forEach(function(d) {currcvd[d.name] = d.pref;}); }
+
+        prefCharts.given.updateData(avgpref.given[name]);
+        prefCharts.received.updateData(avgpref.received[name]);
+
+        d3.select('#buddies').html(getbuddies(name,4).map(function(n){return '<span style="color:'+partyColour(n)+'">'+n+'</span>';}).join(", "));
+        d3.select('#nemeses').html(getfoes(name,4).map(function(n){return '<span style="color:'+partyColour(n)+'">'+n+'</span>';}).join(", "));
+     };
+
+     function draw(data) {
+        "use strict";
+
+        var width = 500, height = 600;
+
+        // set initial positions
+        for(var i = 0; i < data.nodes.length; i += 1) {
+            party_colours[data.nodes[i].name] = data.nodes[i].colour;
+            if(data.nodes[i].name == 'Liberal Party') {
+                data.nodes[i].x = 350;
+                data.nodes[i].y = 200;
+            }
+            else if(data.nodes[i].name == 'Australian Labor Party') {
+                data.nodes[i].x = 150;
+                data.nodes[i].y = 200;
+            }
+            else if(data.nodes[i].name == 'Greens') {
+                data.nodes[i].x = 250;
+                data.nodes[i].y = 400;
+            }
+            else {
+                data.nodes[i].x = 250;
+                data.nodes[i].y = 300;
+            }
+        }
+        var svg = d3.select('svg#graph');
+        svg.append('circle')
+            .attr('id', 'halo')
+            .style('fill', '#ffffff')
+            .attr('cx',100)
+            .attr('cy',100)
+            .attr('r','12');
+
+        var node = svg.selectAll("g.node") .data(data.nodes)
+            .enter()
+            .append('g')
+            .attr("class", "node") ;
+
+        node.append("circle")
+            .attr('class', 'node')
+            .attr('cx',0)
+            .attr('cy',0)
+            .attr("r", 5)
+            .style('fill', function(n,i){return n.colour;})
+            .attr('title', function(n){return n.name;})
+            .attr('stroke','#ffffff')
+            .attr('stroke-width', 0)
+            .on('click', function(n){selected(n.name)});
+        node.append("text")
+            .attr('class','label')
+            .attr("dx", 8)
+            .attr("dy", ".35em")
+            .text(function(d) { return abbrev[d.name]; });
+
+        svg.selectAll('circle.node')
+            .on('mouseover', function(d) {
+                d3.select(this).transition().attr('r',7);
+            })
+            .on('mouseout', function(d) {
+                d3.select(this).transition().attr('r',5);
+            });
+
+        var force = d3.layout.force() .charge(-120)
+            .linkDistance(function(l){return 4.0/l.value;})
+            .size([width, height]) .nodes(data.nodes) .links(data.links) .start();
+        force.on("tick", function() {
+            node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+            });
+        node.call(force.drag);
+        };
 
     var fmt_pref = d3.format("2.3f");
 
@@ -293,8 +328,6 @@
 					.range([0, 120])
 					.domain([1, 100]);
 		var self = this;
-//		var cr = this.svg[0][0].getBoundingClientRect();
-
 		// party -> x offset mapping
 		self.xpos = {};
      	for(var i=0; i<parties.length; i++) {
@@ -318,19 +351,19 @@
      			d3.select('#prefinfoname').text(d.name);
      			d3.select('#prefinfogiven').text(fmt_pref(curgiven[d.name]));
      			d3.select('#prefinforcvd').text(fmt_pref(currcvd[d.name]));
+                d3.select('#prefinfobuddies').text(getbuddies(d.name,3).join(", "));
      			infobox.style('display', 'block')
-     					.style("left", (cr.left +Math.max(0,Math.min(200,( self.xpos[d.name]-100)))) + 'px')
+     					.style("left", (cr.left +Math.max(0,Math.min(160,( self.xpos[d.name]-120)))) + 'px')
      				   .style("top", (cr.bottom + 40) + 'px');
      		})
      		.on("mouseout", function(d) {
      			d3.select(this).transition().style('stroke-width', 0);
      			var infobox = d3.select("#prefinfo");
      			infobox.style('display', 'none');
-
      		});
     };
     PrefChartObject.prototype.updateData = function(dataIn) {
-    	var data = dataIn.map(function(v){return v;});
+    	var data = dataIn ? dataIn.map(function(v){return v;}) : [];
      	var provided = d3.set(data.map(function(v){return v.name;}));
 		var y_extent = d3.extent(data, function(d){return d.pref;});
 		var self = this;
@@ -350,7 +383,6 @@
      		.attr("height", function(d) { return (d.pref===999)? 0 : self.y_scale(y_extent[1]-d.pref); })
      		.style('fill', function(d) { return partyColour(d.name); })
      		.attr("title", function(d) { return fmt_pref(d.pref) + " " + d.name; });
-
     };
 
 	var prefCharts = { given : null, received : null };
