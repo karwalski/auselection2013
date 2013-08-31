@@ -67,6 +67,7 @@ def readstate(state):
 
 re_multiticket = re.compile("(.*) \(Ticket (\d+) of \d+\)")
 party_tickets = {}
+party_states = {}
 for state in STATES:
     statedata = readstate(state)
     print "State %s: %d groups"%(state,len(statedata))
@@ -77,8 +78,10 @@ for state in STATES:
             partyname = m.group(1)
         partyname = normalisePartyName(partyname)
         party_tickets.setdefault(partyname, []).append(rows)
+        party_states.setdefault(partyname, set()).add(state)
 
 # now party_tickets  == party -> [  [  { 'preference': , 'candidate':, 'party':} ] ]
+# and party_states   == party -> set([state, state, ...])
 
 #print party_tickets.values()[0][0][0]
 
@@ -115,7 +118,11 @@ for (r,ds) in recvtally.iteritems():
 
 
 with open('avgprefs.json', 'w') as fp:
-    json.dump(dict(given=prefgive, received=prefrecv), fp)
+    json.dump(dict(
+        given=prefgive, 
+        received=prefrecv,
+        states=dict([(k, list(v)) for (k,v) in party_states.iteritems()])), 
+    fp)
 
 
 if DUMP:

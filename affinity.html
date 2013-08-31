@@ -41,8 +41,9 @@
     		font-family: helvetica, arial;
         	position: absolute;
         	left: 500px;
-        	top: 80px;
+        	top: 84px;
         	width: 520px;
+            height: 600px;
         	background-color: #eee;
         	border: 1px solid #ccc;
         	color: #7f8770;
@@ -50,6 +51,7 @@
         	text-shadow: 1px 1px 0px #fff;
         	margin-left: 4px;
         	padding-left: 8px;        	
+            padding-right: 4px;
         }
 
         #instructions {
@@ -60,11 +62,25 @@
 
         #info h2 {
         	font-size: 18pt;
+            margin-bottom: 4px;
         }
 
         #info h3 {
         	font-size: 14pt;
         	font-weight: normal;
+        }
+
+        #states {
+            margin-top: 0px;
+            font-size: 13px;        
+        }
+
+        #states span {
+            color: #999;
+        }
+        #states span.active {
+            color: #b21;
+            font-weight: bold;
         }
 
         #prefinfo {
@@ -75,7 +91,7 @@
         	width: 240px;
         	height: 130px;
         	background-color: #ffffff;
-        	border: 1px solid #e0e0e0;
+        	border: 1px solid #b0b0b0;
         	border-radius: 2px;
         	color: #777;
         	box-shadow: 2px 2px 2px #ccc;
@@ -109,6 +125,7 @@
         	font-size: 10px;
         	text-shadow: 1px 1px 0px #f0f0f0;
         }
+        a { color: #c50;  }
     </style>
     <script src="http://d3js.org/d3.v3.min.js"></script>
 </head>
@@ -121,6 +138,16 @@
   <div id="sidebar">
 	  <div id="info" style="visibility: hidden">
 	  	<h2 id="partyname">&nbsp;</h2>
+        <div id="states">
+            <span id="act" class="active">ACT</span>
+            <span id="nsw">NSW</span>
+            <span id="nt">NT</span>
+            <span id="qld">QLD</span>
+            <span id="sa">SA</span>
+            <span id="tas">TAS</span>
+            <span id="vic">VIC</span>
+            <span id="wa">WA</span>
+        </div>
 	  	<div id="givenpane">
 		  	<h3><b>Preferences given</b> to other parties</h3>
 		  	<svg id="pg" width="500" height="120">
@@ -201,11 +228,10 @@
      // return a list of N parties most 
      function getfoes(party, count) {
         var d = d3.set([]), nm, got=0;
-        var given = avgpref.given[party], gi=given.length-1;
+        var given = avgpref.given[party], gi=given ? given.length-1 : 0;
         if(!given) return [];
         while(got < count) {
             nm = given[gi--].name;
-            console.log("nm = "+nm);
             if(nm !== party && !d.has(nm)) { 
                 d.add(nm);
                 got += 1;
@@ -221,7 +247,7 @@
      function selected(name) {
         var i;
         if(!avgpref) return;
-        var given = avgpref.given[name], rcvd = avgpref.received[name];
+        var given = avgpref.given[name], rcvd = avgpref.received[name], states = avgpref.states[name];
         d3.select('#instructions').style('visibility', 'hidden');
         d3.select('#info').style('visibility', 'visible');
         d3.select('#info').select('h2').text(name);
@@ -234,6 +260,13 @@
         d3.select('#rcvdpane svg').style('visibility', rcvd ? 'visible' : 'hidden');
         d3.select('#givenpane .emptymsg').style('visibility', given ? 'hidden' : 'visible');
         d3.select('#rcvdpane .emptymsg').style('visibility', rcvd ? 'hidden' : 'visible');
+
+        d3.select('#states').selectAll('span').attr('class','');
+        if(states) {
+            for (i = 0; i < states.length; i += 1) {
+                d3.select('#'+states[i]).attr('class','active');
+            }
+        }
 
         if(given) { given.forEach(function(d) {curgiven[d.name] = d.pref;}); }
         if(rcvd) { rcvd.forEach(function(d) {currcvd[d.name] = d.pref;}); }
@@ -326,7 +359,7 @@
 					.range([0,500]) .domain([0,parties.length-1]);
 		this.y_scale = d3.scale.linear()
 					.range([0, 120])
-					.domain([1, 100]);
+					.domain([0, 1]);
 		var self = this;
 		// party -> x offset mapping
 		self.xpos = {};
@@ -346,6 +379,8 @@
      		.attr("title", function(d) { return d.name; })
      		.on("mouseover", function(d, i) {
 				var cr = self.svg[0][0].getBoundingClientRect();
+                var doc = document.documentElement, body = document.body;
+                var scroll = (doc && doc.scrollTop  || body && body.scrollTop  || 0)
      			d3.select(this).transition().style('stroke-width', 4).style('stroke', partyColour(d.name));
      			var infobox = d3.select("#prefinfo");
      			d3.select('#prefinfoname').text(d.name);
@@ -354,7 +389,7 @@
                 d3.select('#prefinfobuddies').text(getbuddies(d.name,3).join(", "));
      			infobox.style('display', 'block')
      					.style("left", (cr.left +Math.max(0,Math.min(160,( self.xpos[d.name]-120)))) + 'px')
-     				   .style("top", (cr.bottom + 40) + 'px');
+     				   .style("top", (cr.bottom + 4 + scroll ) + 'px');
      		})
      		.on("mouseout", function(d) {
      			d3.select(this).transition().style('stroke-width', 0);
@@ -379,8 +414,8 @@
      		.data(data, function(d){return d.name;})
      	.transition().duration(300)
      		.attr("x", function(d, i) { return self.x_scale(i) - .5; })
-     		.attr("y", function(d) { return (d.pref===999)? 120 :120 - self.y_scale(y_extent[1]-d.pref) - .5; })
-     		.attr("height", function(d) { return (d.pref===999)? 0 : self.y_scale(y_extent[1]-d.pref); })
+     		.attr("y", function(d) { return (d.pref===999)? 120 :120 - self.y_scale((y_extent[1]-d.pref)/y_extent[1]) - .5; })
+     		.attr("height", function(d) { return (d.pref===999)? 0 : self.y_scale((y_extent[1]-d.pref)/y_extent[1]); })
      		.style('fill', function(d) { return partyColour(d.name); })
      		.attr("title", function(d) { return fmt_pref(d.pref) + " " + d.name; });
     };
