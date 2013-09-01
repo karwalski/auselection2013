@@ -422,14 +422,47 @@
 
 	var prefCharts = { given : null, received : null };
 
-    d3.json("avgprefs.json", function(data) { 
-    	avgpref = data; 
+    function decodeprefdict(data, partylist) {
+        var r = {}, k, l, rl, i;
+        for (k in data) {
+            if (data.hasOwnProperty(k)) {
+                l = data[k];
+                rl = [];
+                for (i = 0; i < l.length; i += 1) {
+                    rl.push( { name:partylist[l[i].i], pref:l[i].p} );
+                }
+                r[partylist[k]] = rl;
+            }
+        }
+        return r;
+    }
+
+    function decodestates(data, partylist) {
+        var states = ["nsw", "vic", "qld", "wa", "sa", "tas", "act", "nt"];
+        var r = {}, k, l, s, i;
+        for (k in data) {
+            if (data.hasOwnProperty(k)) {
+                l = [];
+                s = data[k].split('');
+                for( i = 0; i < s.length; i += 1) {
+                    l.push(states[s[i]]);
+                }
+                r[partylist[k]] = l;
+            }
+        } 
+        return r;       
+    }
+
+    d3.json("prefdata.json", function(data) { 
+//    	avgpref = data; 
+        avgpref = {};
+        avgpref.given = decodeprefdict(data.g, data.p);
+        avgpref.received = decodeprefdict(data.r, data.p);
+        avgpref.states = decodestates(data.s, data.p);
     	d3.select('#graph').style('visibility', 'visible');
     	// fill given/received charts with initial data
     	prefCharts.given = new PrefChartObject('svg#pg', d3.keys(avgpref.received));
     	prefCharts.received = new PrefChartObject('svg#pr', d3.keys(avgpref.given));
-
-
     });
     d3.json("fdg.json", draw);
   </script>

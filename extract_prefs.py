@@ -83,8 +83,6 @@ for state in STATES:
 # now party_tickets  == party -> [  [  { 'preference': , 'candidate':, 'party':} ] ]
 # and party_states   == party -> set([state, state, ...])
 
-#print party_tickets.values()[0][0][0]
-
 # now compute the each party's average preference per other party
 
 # the outgoing preferences of parties
@@ -117,13 +115,37 @@ for (r,ds) in recvtally.iteritems():
     prefrecv[r].sort(key=lambda d:d['pref'])
 
 
+partystates=dict([(k, list(v)) for (k,v) in party_states.iteritems()])
+
+# avgprefs.json is the less compact form, used by other scripts, but not the JavaScript UI 
 with open('avgprefs.json', 'w') as fp:
     json.dump(dict(
         given=prefgive, 
         received=prefrecv,
-        states=dict([(k, list(v)) for (k,v) in party_states.iteritems()])), 
+        states=partystates),
     fp)
 
+# process the dict into a more compact form
+parties = set(prefgive.keys()+prefrecv.keys()+party_states.keys())
+for prefs in prefgive.values()+prefrecv.values():
+    parties.update([p['name'] for p in prefs])
+parties = list(parties)
+parties.sort()
+party2id = dict([(n,i) for (i,n) in enumerate(parties)])
+
+def encodeprefdict(pd):
+    return dict([ 
+            (party2id[na], [ dict(i=party2id[d['name']],p=d['pref']) for d in prefs ]) for (na,prefs) in pd.iteritems() ])
+
+state2id = dict([(n,str(i)) for (i,n) in enumerate(STATES)])
+
+with open('prefdata.json', 'w') as fp:
+    json.dump(dict(
+        g=encodeprefdict(prefgive), 
+        r=encodeprefdict(prefrecv),
+        s=dict([ (party2id[k], ''.join([state2id[st] for st in v])) for (k,v) in partystates.iteritems()]),
+        p=parties
+    ), fp)
 
 if DUMP:
     for (party, avgs) in avgpref.iteritems():
