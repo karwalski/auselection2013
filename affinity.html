@@ -285,7 +285,11 @@
         // set initial positions
         for(var i = 0; i < data.nodes.length; i += 1) {
             party_colours[data.nodes[i].name] = data.nodes[i].colour;
-            if(data.nodes[i].name == 'Liberal Party') {
+            if(data.nodes[i].name == 'The WikiLeaks Party') {
+                data.nodes[i].x = 0;
+                data.nodes[i].y = 0;
+            }
+            else if(data.nodes[i].name == 'Liberal Party') {
                 data.nodes[i].x = 350;
                 data.nodes[i].y = 200;
             }
