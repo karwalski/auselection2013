@@ -242,6 +242,12 @@
      // the current preference relationship: party name -> pref
      var curgiven = {}, currcvd = {};
 
+     /* Load a default party on load */
+        function loadedDefault() {
+            alert('ok');
+        }
+        window.onload = loadedDefault;
+
      /* called when a party has been selected */
      function selected(name) {
         var i;
