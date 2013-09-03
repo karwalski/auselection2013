@@ -250,11 +250,6 @@
         d3.select('#givenname').text('The Wikileaks Party');
         d3.select('#rcvdname').text('The Wikileaks Party');
         
-        d3.select('#givenpane svg').style('visibility', given ? 'visible' : 'hidden');
-        d3.select('#rcvdpane svg').style('visibility', rcvd ? 'visible' : 'hidden');
-        d3.select('#givenpane .emptymsg').style('visibility', given ? 'hidden' : 'visible');
-        d3.select('#rcvdpane .emptymsg').style('visibility', rcvd ? 'hidden' : 'visible');
-        
         d3.select('#states').selectAll('span').attr('class','');
         if(states) {
             for (i = 0; i < states.length; i += 1) {
