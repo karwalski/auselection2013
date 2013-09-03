@@ -284,13 +284,14 @@
 
        /* the onload code */
      function loadinglaunch(name) {
+     	var i;
         d3.select('#info').select('h2').text(name);
         d3.select('#prefinforel').text(name);
         d3.select('#prefinforel2').text(name);
         d3.select('#givenname').text(name);
         d3.select('#rcvdname').text(name);
         
-        var given = avgpref.given[name], rcvd = avgpref.received[name], states = avgpref.states[name];
+        var given = avgpref.given[name], rcvd = avgpref.received[name],;
         
         given.forEach(function(d) {curgiven[d.name] = d.pref;});
         rcvd.forEach(function(d) {currcvd[d.name] = d.pref;});
