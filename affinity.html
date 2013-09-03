@@ -242,12 +242,6 @@
      // the current preference relationship: party name -> pref
      var curgiven = {}, currcvd = {};
 
-     /* Load a default party on load */
-        function loadedDefault(name) {
-        d3.select('#info').select('h2').text(name);
-      };
-
-
 
      /* called when a party has been selected */
      function selected(name) {
@@ -285,8 +279,7 @@
      };
 
         // onload after code
-	var n = 'The Wikileaks Party'
-        window.onload = selected(n);
+        window.onload = selected('The Wikileaks Party');
 
      function draw(data) {
         "use strict";
@@ -328,6 +321,7 @@
             .attr('stroke','#ffffff')
             .attr('stroke-width', 0)
             .on('click', function(n){selected(n.name)});
+            .on('load', function(n){selected(n.name)});
         node.append("text")
             .attr('class','label')
             .attr("dx", 8)
