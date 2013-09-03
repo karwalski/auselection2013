@@ -243,7 +243,7 @@
      var curgiven = {}, currcvd = {};
 
      /* Load a default party on load */
-        function loadedDefault(name) {
+        function loadedDefault() {
         var i;
         if(!avgpref) return;
         var given = avgpref.given[name], rcvd = avgpref.received[name], states = avgpref.states[name];
@@ -275,7 +275,7 @@
         d3.select('#nemeses').html(getfoes(name,4).map(function(n){return '<span style="color:'+partyColour(n)+'">'+n+'</span>';}).join(", "));
      };
 
-        window.onload = loadedDefault('The Wikileaks Party');
+        window.onload = loadedDefault();
 
      /* called when a party has been selected */
      function selected(name) {
@@ -284,7 +284,7 @@
         var given = avgpref.given[name], rcvd = avgpref.received[name], states = avgpref.states[name];
         d3.select('#instructions').style('visibility', 'hidden');
         d3.select('#info').style('visibility', 'visible');
-        d3.select('#info').select('h2').text(name);
+        d3.select('#info').select('h2').text('The Wikileaks Party');
         d3.select('#prefinforel').text(name);
         d3.select('#prefinforel2').text(name);
         d3.select('#givenname').text(name);
