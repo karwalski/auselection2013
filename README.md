@@ -5,7 +5,7 @@ Note. this fork is for the WikiLeaks Party to be selected by default, styling ad
 
 Task, to have the preferences for WikiLeaks Party opened on loading of the page. All other functionality to remain the same.
 
-
+Contact @karwalski for access to the development server which automatically pulls from this repo
 
 Original - auselection2013 
 ==========================
