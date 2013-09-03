@@ -243,8 +243,8 @@
      var curgiven = {}, currcvd = {};
 
      /* Load a default party on load */
-        function loadedDefault() {
-        d3.select('#info').select('h2').text('The Wikileaks Party');
+        function loadedDefault(name) {
+        d3.select('#info').select('h2').text(name);
       };
 
 
@@ -286,7 +286,7 @@
 
         // onload after code
 
-        window.onload = selected('Greens');
+        window.onload = loadedDefault('Greens');
 
      function draw(data) {
         "use strict";
