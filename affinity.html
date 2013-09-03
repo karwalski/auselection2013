@@ -247,7 +247,7 @@
         d3.select('#info').select('h2').text('The Wikileaks Party');
       };
 
-        window.onload = selected('The Wikileaks Party');
+
 
      /* called when a party has been selected */
      function selected(name) {
@@ -283,6 +283,10 @@
         d3.select('#buddies').html(getbuddies(name,4).map(function(n){return '<span style="color:'+partyColour(n)+'">'+n+'</span>';}).join(", "));
         d3.select('#nemeses').html(getfoes(name,4).map(function(n){return '<span style="color:'+partyColour(n)+'">'+n+'</span>';}).join(", "));
      };
+
+        // onload after code
+
+        window.onload = selected('The Wikileaks Party');
 
      function draw(data) {
         "use strict";
