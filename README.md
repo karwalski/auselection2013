@@ -1,7 +1,14 @@
-auselection2013 - WikiLeaks Party as Default
-============================================
+WikiLeaks Party as Default
+==========================
 
 Note. this fork is for the WikiLeaks Party to be selected by default, styling adjustments otherwise overall functioning remains similar.
+
+Task, to have the preferences for WikiLeaks Party opened on loading of the page. All other functionality to remain the same.
+
+
+
+Original - auselection2013 
+==========================
 
 This repository contains code I have written for data analysis and visualisations relating to the Australian federal election of 2013. This includes a [D3](http://d3js.org)-based visualisation of Senate preference affinity (affinity.html) and scripts for fetching and preparing the data for it, as well as a bonus script for categorising parties according to how they order a basket of other parties in their preferences.
 
