@@ -249,9 +249,9 @@
         d3.select('#prefinforel2').text('The Wikileaks Party');
         d3.select('#givenname').text('The Wikileaks Party');
         d3.select('#rcvdname').text('The Wikileaks Party');
-        var name = 'The Wikileaks Party'
-        d3.select('#buddies').html(getbuddies(name,4).map(function(n){return '<span style="color:'+partyColour(n)+'">'+n+'</span>';}).join(", "));
-        d3.select('#nemeses').html(getfoes(name,4).map(function(n){return '<span style="color:'+partyColour(n)+'">'+n+'</span>';}).join(", "));
+        var xname = 'The Wikileaks Party'
+        d3.select('#buddies').html(getbuddies(xname,4).map(function(n){return '<span style="color:'+partyColour(n)+'">'+n+'</span>';}).join(", "));
+        d3.select('#nemeses').html(getfoes(xname,4).map(function(n){return '<span style="color:'+partyColour(n)+'">'+n+'</span>';}).join(", "));
 
      };
 
