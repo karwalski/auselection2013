@@ -243,10 +243,9 @@
      var curgiven = {}, currcvd = {};
 
      /* Load a default party on load */
-        function loadedDefault() {
+        function loadedDefault(name) {
         var i;
         if(!avgpref) return;
-        var name = "The Wikileaks Party";
         var given = avgpref.given[name], rcvd = avgpref.received[name], states = avgpref.states[name];
         d3.select('#info').select('h2').text(name);
         d3.select('#prefinforel').text(name);
@@ -276,7 +275,7 @@
         d3.select('#nemeses').html(getfoes(name,4).map(function(n){return '<span style="color:'+partyColour(n)+'">'+n+'</span>';}).join(", "));
      };
 
-        window.onload = loadedDefault;
+        window.onload = loadedDefault(name);
 
      /* called when a party has been selected */
      function selected(name) {
