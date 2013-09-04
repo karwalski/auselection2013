@@ -300,11 +300,19 @@
         // set initial positions
         for(var i = 0; i < data.nodes.length; i += 1) {
             party_colours[data.nodes[i].name] = data.nodes[i].colour;
-            if(data.nodes[i].name == 'The Wikileaks Party') {
-                data.nodes[i].x = 250;
-                data.nodes[i].y = 300;
+            if(data.nodes[i].name == 'Liberal Party') {
+                data.nodes[i].x = 350;
+                data.nodes[i].y = 200;
             }
-             else {
+            else if(data.nodes[i].name == 'Australian Labor Party') {
+                data.nodes[i].x = 150;
+                data.nodes[i].y = 200;
+            }
+            else if(data.nodes[i].name == 'Greens') {
+                data.nodes[i].x = 250;
+                data.nodes[i].y = 400;
+            }
+            else {
                 data.nodes[i].x = 250;
                 data.nodes[i].y = 300;
             }
