@@ -279,8 +279,6 @@
      };
 
         // onload after code
-        window.onload = selected('The Wikileaks Party');
-        window.onload = loadinglaunch('The Wikileaks Party');
 
        /* the onload code */
      function loadinglaunch(name) {
@@ -355,6 +353,7 @@
             node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
             });
         node.call(force.drag);
+    	selected("The Wikileaks Party");
         };
 
     var fmt_pref = d3.format("2.3f");
